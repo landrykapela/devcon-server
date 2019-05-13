@@ -57,12 +57,17 @@ exports.login = (req,res,nex)=>{
   user.login(password)
     .then((rs)=>{
       console.log(rs);
-
-      res.redirect('http://localhost:3000/account/'+user.getId());
+      if(user.isAdmin()){
+        //redirect to admin dashboard
+        res.redirect('http://localhost:3000/admin/');
+      }
+      else{
+        //redirect to user account
+        res.redirect('http://localhost:3000/account/'+user.getId());
+      }
 
     })
     .catch((err)=>{
-
       res.redirect('http://localhost:3000/login/?err='+err.message);
     })
 }
