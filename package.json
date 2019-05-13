@@ -1,0 +1,28 @@
+{
+  "name": "dev-connect",
+  "version": "1.0.0",
+  "description": "directory of developers",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "developers",
+    "directory",
+    "landry",
+    "landrykapela",
+    "kapela",
+    "web",
+    "developers",
+    "software",
+    "developers"
+  ],
+  "author": "Landry Kapela",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "express": "^4.16.4",
+    "mysql": "^2.17.1",
+    "url": "^0.11.0"
+  }
+}
