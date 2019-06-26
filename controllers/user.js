@@ -4,32 +4,45 @@ const url = require('url');
 const firebase = require('../database/firebase');
 
 exports.signup = (req, res, next) => {
-    let email = "landrykapela@neelansoft.com"; //req.body.email;
-    let password = "This is my password"; //req.body.password;
+    let email = req.body.email;
+    let password = req.body.password;
     let name = req.body.name;
     console.log("email: " + email);
     console.log("password: " + password);
-    let user = new User(0, email, name, 0);
-    req.user = user;
-    console.log("user: " + JSON.stringify(user));
-    firebase.signupWithEmailAndPassword(email, password);
-    // user.encryptPassword(password)
-    //   .then((result)=>{
-    //     user.register()
-    //       .then((result)=>{
-    //         if(result === 0){
-    //           res.redirect('http://localhost:3000/login');
-    //         }
-    //       })
-    //       .catch((error)=>{
-    //         res.redirect('http://localhost:3000/signup/?err='+error);
-    //       })
+    let user = new User();
+
+    let response = {};
+    firebase.signupWithEmailAndPassword(email, password)
+        .then(u => {
+            user.setId(u.uid);
+            user.setEmail(u.email);
+            u.emailSent ? response.verification = "E-mail verification message was sent to your e-mail address" : "E-mail not sent";
+            response.user = user;
+            res.status(201).json({ response: response })
+        })
+        .catch(e => {
+            console.log(e)
+            response.errorCode = e.code;
+            response.errorMessage = e.message;
+            res.status(400).json({ response: response })
+        })
+        // user.encryptPassword(password)
+        //   .then((result)=>{
+        //     user.register()
+        //       .then((result)=>{
+        //         if(result === 0){
+        //           res.redirect('http://localhost:3000/login');
+        //         }
+        //       })
+        //       .catch((error)=>{
+        //         res.redirect('http://localhost:3000/signup/?err='+error);
+        //       })
 
     //   })
     //   .catch((err)=>{
     //     res.redirect('http://localhost:3000/signup/?err='+err);
     //   });
-    res.status(200).json({ response: "success" })
+
 }
 
 //module to get user details

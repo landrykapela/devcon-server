@@ -1,0 +1,11 @@
+{
+    "firebaseConfig": {
+        "apiKey": "AIzaSyBtF63skcfytR48AoKINtvMkYrTJCUKErM",
+        "authDomain": "devpool-92d89.firebaseapp.com",
+        "databaseURL": "https://devpool-92d89.firebaseio.com",
+        "projectId": "devpool-92d89",
+        "storageBucket": "devpool-92d89.appspot.com",
+        "messagingSenderId": "716459321517",
+        "appId": "1:716459321517:web:8e948d050e4d87f5"
+    }
+}
