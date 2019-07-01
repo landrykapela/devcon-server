@@ -38,6 +38,21 @@ exports.registerDeveloper = (req, res) => {
     });
 };
 
+//get list of all developers
+exports.getAll = (req, res) => {
+  firebase
+    .listDevelopers()
+    .then(developers => {
+      if (developers === null) {
+        res.status(200).json("No data available");
+      } else {
+        res.status(200).json({ developers });
+      }
+    })
+    .catch(e => {
+      res.status(400).json({ e });
+    });
+};
 //module to get developer details
 exports.getDeveloper = (req, res, next) => {
   let id = req.params.id;

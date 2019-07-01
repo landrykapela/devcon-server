@@ -25,7 +25,7 @@ exports.listDevelopers = () => {
       .get()
       .then(querySnapshot => {
         if (querySnapshot.empty) {
-          resolve(false);
+          resolve(null);
         } else {
           let devs = [];
           querySnapshot.docs.map(dev => {
