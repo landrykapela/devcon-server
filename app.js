@@ -2,9 +2,8 @@ const express = require("express");
 
 const app = express();
 const bodyParser = require("body-parser");
-const db = require("./database/connection");
 const authRouter = require("./routes/authentication");
-const catRouter = require("./routes/category");
+const dataRouter = require("./routes/data");
 const devRouter = require("./routes/developer");
 
 //allow cross origin
@@ -25,6 +24,6 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/categories", catRouter);
+app.use("/api/v1/data", dataRouter);
 app.use("/api/v1/developers", devRouter);
 module.exports = app;

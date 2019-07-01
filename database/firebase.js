@@ -2,7 +2,6 @@ const firebase = require("firebase/app");
 require("firebase/auth");
 require("firebase/firestore");
 const config = require("./firebaseConfig.json");
-const Developer = require("../models/developer");
 
 //initialize firebase application
 const firebaseApp = firebase.initializeApp(config.firebaseConfig);
@@ -11,7 +10,36 @@ const firebaseFirestore = firebase.firestore(firebaseApp);
 if (firebaseApp) {
   console.log("Successfully initialized Firebase App");
 }
+exports.firestore = firebaseFirestore;
+exports.firebaseAuth = firebaseAuth;
 
+/**
+ * get list of all developers
+ * method: listDevelopers
+ * @returns: Promise<userInfo>
+ */
+exports.listDevelopers = () => {
+  return new Promise((resolve, reject) => {
+    let devsRef = firebaseFirestore.collection("developers");
+    devsRef
+      .get()
+      .then(querySnapshot => {
+        if (querySnapshot.empty) {
+          resolve(false);
+        } else {
+          let devs = [];
+          querySnapshot.docs.map(dev => {
+            devs.push(Object.assign({}, dev.data()));
+          });
+          resolve(devs);
+        }
+      })
+      .catch(e => {
+        console.log("listDevelopers: ", e);
+        reject(e);
+      });
+  });
+};
 /**
  * save developer details to firestore databa
  * method: saveDeveloperDetails
