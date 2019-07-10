@@ -59,6 +59,7 @@ exports.getDeveloper = (req, res, next) => {
   firebase
     .getDeveloperDetails(id)
     .then(dev => {
+      console.log("getDeveloper: ", dev);
       res.status(200).json({ dev });
     })
     .catch(e => {
@@ -76,6 +77,26 @@ exports.updateDeveloper = (req, res, next) => {
     .updateDeveloper(data)
     .then(dev => {
       res.status(201).json({ dev });
+    })
+    .catch(e => {
+      console.log(e);
+      res.status(200).json({ e });
+    })
+    .catch(e => {
+      console.log(e);
+      res.status(400).json({ e });
+    });
+};
+
+//module to update developer item
+exports.updateDeveloperItem = (req, res, next) => {
+  let data = {};
+  data = req.body;
+  data.uid = req.params.id;
+  firebase
+    .updateDeveloperItem(data)
+    .then(success => {
+      res.status(201).json({ success });
     })
     .catch(e => {
       console.log(e);

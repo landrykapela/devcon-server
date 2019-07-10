@@ -2,6 +2,7 @@ const firebase = require("firebase/app");
 require("firebase/auth");
 require("firebase/firestore");
 const config = require("./firebaseConfig.json");
+const Developer = require("../models/developer");
 
 //initialize firebase application
 const firebaseApp = firebase.initializeApp(config.firebaseConfig);
@@ -75,11 +76,72 @@ exports.saveDeveloperDetails = developer => {
 };
 
 /**
- * get developer details from firestore database
- * method: getUserDetails
+ * udpate developer detail item in firestore
+ * method: udpateDeveloperItem
  * @param: uid (string)
  * @returns: Promise<userInfo>
  */
+exports.updateDeveloperItem = data => {
+  return new Promise((resolve, reject) => {
+    let devRef = firebaseFirestore.collection("developers").doc(data.uid);
+    switch (data.target) {
+      case "skills":
+        devRef
+          .update({ skills: data.value })
+          .then(() => resolve(true))
+          .catch(e => reject(e));
+        break;
+      case "links":
+        devRef
+          .update({ links: data.value })
+          .then(() => resolve(true))
+          .catch(e => reject(e));
+        break;
+      case "languages":
+        devRef
+          .update({ languages: data.value })
+          .then(() => resolve(true))
+          .catch(e => reject(e));
+        break;
+      case "frameworks":
+        devRef
+          .update({ frameworks: data.value })
+          .then(() => resolve(true))
+          .catch(e => reject(e));
+        break;
+      case "work":
+        devRef
+          .update({ work: data.value })
+          .then(() => resolve(true))
+          .catch(e => reject(e));
+        break;
+      case "pic":
+        devRef
+          .update({ pic: data.value })
+          .then(() => resolve(true))
+          .catch(e => reject(e));
+        break;
+      case "experience":
+        devRef
+          .update({ experience: data.value })
+          .then(() => resolve(true))
+          .catch(e => reject(e));
+        break;
+      case "name":
+        devRef
+          .update({ name: data.value })
+          .then(() => resolve(true))
+          .catch(e => reject(e));
+        break;
+      case "profession":
+        devRef
+          .update({ profession: data.value })
+          .then(() => resolve(true))
+          .catch(e => reject(e));
+        break;
+    }
+  });
+};
 /**
  * update developer info
  * method updateDeveloper
@@ -136,7 +198,12 @@ exports.getDeveloperDetails = uid => {
       .get()
       .then(doc => {
         if (!doc.exists) {
-          console.log("Developer document not found");
+          const e = {
+            code: "doc not found",
+            message: "Developer document not found"
+          };
+          console.log(e);
+          reject(e);
         } else {
           const data = doc.data();
 
@@ -145,6 +212,8 @@ exports.getDeveloperDetails = uid => {
         }
       })
       .catch(e => {
+        if (e.code === "unavailable")
+          e.message = "Failed to connect. Please check your internet";
         console.log(e);
         reject(e);
       });
@@ -161,6 +230,7 @@ exports.getDeveloperDetails = uid => {
 exports.saveUserInfo = (uid, type = 0) => {
   return new Promise((resolve, reject) => {
     firebaseAuth.onAuthStateChanged(uInfo => {
+      console.log("x: ", uInfo.uid + "******" + uid);
       if (uInfo.uid === uid) {
         let userInfo = uInfo.toJSON();
         console.log("userinfo: ", userInfo);
@@ -180,7 +250,71 @@ exports.saveUserInfo = (uid, type = 0) => {
               .get()
               .then(doc => {
                 let userData = Object.assign({}, doc.data());
-                resolve(userData);
+                console.log("userData: ", userData);
+                if (type === 0) {
+                  let dev = JSON.stringify(
+                    new Developer(
+                      userData.uid,
+                      userData.name,
+                      userData.email,
+                      "Software Developer",
+                      1,
+                      uInfo.photoUrl,
+                      [],
+                      [],
+                      [],
+                      [],
+                      []
+                    )
+                  );
+                  let devRef = firebaseFirestore
+                    .collection("developers")
+                    .doc(userData.uid);
+                  devRef
+                    .set(JSON.parse(dev))
+                    .then(() => {
+                      devRef
+                        .get()
+                        .then(doc => {
+                          let devinfo = Object.assign({}, doc.data());
+                          resolve(devinfo);
+                        })
+                        .catch(e => {
+                          console.log(e);
+                          reject(e);
+                        });
+                    })
+                    .catch(e => {
+                      console.log(e);
+                      reject(e);
+                    });
+                } else {
+                  let client = JSON.stringify({
+                    uid: userData.uid,
+                    name: userData.name
+                  });
+                  let clientRef = firebaseFirestore
+                    .collection("clients")
+                    .doc(client.uid);
+                  clientRef
+                    .set(JSON.parse(client))
+                    .then(() => {
+                      clientRef
+                        .get()
+                        .then(doc => {
+                          let clientinfo = Object.assign({}, doc.data());
+                          resolve(clientinfo);
+                        })
+                        .catch(e => {
+                          console.log(e);
+                          reject(e);
+                        });
+                    })
+                    .catch(e => {
+                      console.log(e);
+                      reject(e);
+                    });
+                }
               })
               .catch(e => {
                 console.log(e);
@@ -190,6 +324,8 @@ exports.saveUserInfo = (uid, type = 0) => {
           .catch(e => {
             reject(e);
           });
+      } else {
+        console.log("saveUserInfo: ", "nothing");
       }
     });
   });
@@ -201,9 +337,7 @@ exports.getUserInfo = uid => {
       console.log("user.uid: ", user.uid);
       console.log("uid: ", uid);
       if (user && user.uid === uid) {
-        let userRef = firebaseFirestore
-          .collection("users")
-          .doc("JS61ERKUPXQeXNIR2U9RWgbzL9Z2");
+        let userRef = firebaseFirestore.collection("users").doc(uid);
         userRef
           .get()
           .then(userDoc => {
@@ -217,6 +351,8 @@ exports.getUserInfo = uid => {
             }
           })
           .catch(e => {
+            if (e.code === "unavailable")
+              e.message = "Failed to connect. Please check your internet";
             console.log("getUserInfo: ", e);
             reject(e);
           });
@@ -295,8 +431,33 @@ exports.signinWithEmailAndPassword = (email, password) => {
         resolve(user);
       })
       .catch(e => {
+        if (e.code === "unavailable")
+          e.message = "Failed to connect. Please check your internet";
         console.log(e);
         reject(e);
+      });
+  });
+};
+
+/**
+ * signin to firebase with google account
+ * method: signinWithGoogle
+ * @param: id_token
+ * @returns: Promise<user>
+ */
+exports.signinWithGoogle = id_token => {
+  return new Promise((resolve, reject) => {
+    const credential = new firebase.auth.GoogleAuthProvider().credential(
+      id_token
+    );
+    firebaseAuth
+      .signInWithCredential(credential)
+      .then(credentials => {
+        let user = credentials.user;
+        resolve(user);
+      })
+      .catch(e => {
+        console.log("signinWithGoogle: ", e);
       });
   });
 };
