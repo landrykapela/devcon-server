@@ -16,7 +16,7 @@ class User {
 
   //getter methods
   getId() {
-    return this.id;
+    return this.uid;
   }
   getEmail() {
     return this.email;
