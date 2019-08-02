@@ -7,7 +7,7 @@ exports.getLanguages = (req, res, next) => {
       console.log(languages);
       if (languages === false) {
         res.status(200).json("No data available");
-      } else res.status(200).json({ languages });
+      } else res.status(200).json({ response: languages });
     })
     .catch(error => {
       res.status(200).json({ error });
@@ -22,7 +22,7 @@ exports.getFrameworks = (req, res, next) => {
     .then(frameworks => {
       if (frameworks === false) {
         res.status(200).json("No data available");
-      } else res.status(200).json({ frameworks });
+      } else res.status(200).json({ response: frameworks });
     })
     .catch(error => {
       res.status(200).json({ error });
@@ -37,7 +37,7 @@ exports.getSkills = (req, res, next) => {
     .then(skills => {
       if (skills === false) {
         res.status(200).json("No data available");
-      } else res.status(200).json({ skills });
+      } else res.status(200).json({ response: skills });
     })
     .catch(error => {
       res.status(200).json({ error });
@@ -52,7 +52,7 @@ exports.getProfessions = (req, res, next) => {
     .then(professions => {
       if (professions === false) {
         res.status(200).json("No data available");
-      } else res.status(200).json({ professions });
+      } else res.status(200).json({ response: professions });
     })
     .catch(error => {
       res.status(200).json({ error });
