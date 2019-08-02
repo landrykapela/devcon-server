@@ -1,7 +1,8 @@
 const db = require("../database/connection");
-const bcrypt = require("bcrypt-nodejs");
-const TYPE_DEV = 0;
-const TYPE_CLIENT = 1;
+const bcrypt = require("bcrypt");
+const TYPE_ADMIN = 0;
+const TYPE_DEV = 1;
+const TYPE_CLIENT = 2;
 const PASSWORD_SALT = 10;
 
 class User {
@@ -35,6 +36,9 @@ class User {
   }
   isClient() {
     return this.type === TYPE_CLIENT;
+  }
+  isAdmin() {
+    return this.user_type === TYPE_ADMIN;
   }
 
   //setter Methods

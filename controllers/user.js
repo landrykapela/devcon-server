@@ -64,6 +64,7 @@ exports.getUser = (req, res) => {
 exports.login = (req, res, next) => {
   let email = req.body.email;
   let password = req.body.password;
+
   console.log("backend: ", email);
   let response = {};
   let user = new User();
