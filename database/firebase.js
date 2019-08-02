@@ -3,6 +3,7 @@ require("firebase/auth");
 require("firebase/firestore");
 const config = require("./firebaseConfig.json");
 const Developer = require("../models/developer");
+const DEFAULTS = require("./defaults.json").defaults;
 
 //initialize firebase application
 const firebaseApp = firebase.initializeApp(config.firebaseConfig);
@@ -26,6 +27,7 @@ exports.listDevelopers = () => {
       .get()
       .then(querySnapshot => {
         if (querySnapshot.empty) {
+          console.log("listDev: ", "no devs");
           resolve(null);
         } else {
           let devs = [];
@@ -121,24 +123,28 @@ exports.updateDeveloperItem = data => {
           .then(() => resolve(true))
           .catch(e => reject(e));
         break;
-      case "experience":
+      case "edit":
+        let obj = {};
+        if (data.name) obj.name = data.name;
+        if (data.experience) obj.experience = data.experience;
+        if (data.profession) obj.profession = data.profession;
         devRef
-          .update({ experience: data.value })
+          .update(obj)
           .then(() => resolve(true))
           .catch(e => reject(e));
         break;
-      case "name":
-        devRef
-          .update({ name: data.value })
-          .then(() => resolve(true))
-          .catch(e => reject(e));
-        break;
-      case "profession":
-        devRef
-          .update({ profession: data.value })
-          .then(() => resolve(true))
-          .catch(e => reject(e));
-        break;
+      // case "name":
+      //   devRef
+      //     .update({ name: data.value })
+      //     .then(() => resolve(true))
+      //     .catch(e => reject(e));
+      //   break;
+      // case "profession":
+      //   devRef
+      //     .update({ profession: data.value })
+      //     .then(() => resolve(true))
+      //     .catch(e => reject(e));
+      //   break;
     }
   });
 };
@@ -255,11 +261,11 @@ exports.saveUserInfo = (uid, type = 0) => {
                   let dev = JSON.stringify(
                     new Developer(
                       userData.uid,
-                      userData.name,
+                      userData.displayName,
                       userData.email,
-                      "Software Developer",
-                      1,
-                      uInfo.photoUrl,
+                      DEFAULTS.profession,
+                      DEFAULTS.experience,
+                      uInfo.photoUrl || DEFAULTS.avatar,
                       [],
                       [],
                       [],
